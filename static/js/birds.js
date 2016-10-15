@@ -33,6 +33,9 @@ function Birds(n, geometry, position, speed, scene, createTime) {
 	        	}
 	        }
     	} while (i != j);
+        if (speed[2] < 0) {
+            mesh.rotation.y = Math.PI;
+        }
         mesh.position.set(x, y, z);
         //mesh.rotation.z = speed.z;
         mesh.castShadow = true;
