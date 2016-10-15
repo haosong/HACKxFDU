@@ -21,14 +21,18 @@ function Birds(n, geometry, position, speed, scene, createTime) {
         this.mixers.push(mixer);
 
         var x, y, z;
-        x = position[0] + Math.random() * 10 - 5;
-        y = position[1] + Math.random() * 10 - 5;
-        z = position[2] + Math.random() * 10 - 5;
-        // mesh.rotation.x = speed.x;
-        console.log(speed[2]);
-        if (speed[2] < 0) {
-            mesh.rotation.y = Math.PI;
-        }
+        do {
+	        x = position[0] + Math.random() * 10 - 5;
+	        y = position[1] + Math.random() * 10 - 5;
+	        z = position[2] + Math.random() * 10 - 5;
+	        var j;
+	        for (j = 0; j < i; j++) {
+	        	var pos = this.meshs[i].position;
+	        	if (Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2) + Math.pow(pos.z - z, 2) < 5) {
+	        		break;
+	        	}
+	        }
+    	} while (i != j);
         mesh.position.set(x, y, z);
         //mesh.rotation.z = speed.z;
         mesh.castShadow = true;
