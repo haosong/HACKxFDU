@@ -28,10 +28,6 @@
         } else {
             $state = $('你当前的浏览器不支持WebRTC');
         }
-
-        // TODO BUILD CONNECTION AND REMOVE THIS
-        process();
-        // END OF TODO
     });
 
     function setState(text) {
@@ -68,8 +64,9 @@
 
         var motionLastUpdate = 0;
 
-        var sendEvent = function(eventType, para1, para2) {
-            alert('[INFO]' + new Date().toISOString() + ' '+ eventType + ' ' + para1 + ' ' + para2);
+        var sendEvent = function(eventType, para1, para2, para3) {
+            console.log('[INFO]' + new Date().toISOString() + ' '+ eventType + ' ' + para1 + ' ' + para2 + ' ' + para3);
+            conn.send(ConnectionBean(eventType, para1, para2, para3));
         };
 
         $('#reset').click(function () {
@@ -81,7 +78,7 @@
             var o = e.originalEvent;
 
             deviceOrientationAlpha = o.alpha;
-            deviceOrientationBeta = -o.beta; // Note that originally beta increase downside
+            deviceOrientationBeta = o.beta;
 
             if (!rotateInited) {
                 rotateInited = true;
@@ -90,6 +87,7 @@
         });
 
         /* Jump */
+        /*
         $(window).on('devicemotion', function (e) {
             var m = e.originalEvent;
 
@@ -100,7 +98,8 @@
 
         /* Control block */
         var controlBlock = document.getElementById('control');
-        defaultControlBlockLeft = (window.screen.height - controlBlock.style.width) >> 1;
+        defaultControlBlockLeft = (document.body.clientWidth - controlBlock.scrollWidth) >> 1;
+        controlBlock.style.display = "none";
 
         function resetControlBlock() {
             var currentControlBlockLeft = controlBlock.offsetLeft;
@@ -133,17 +132,20 @@
         }
 
         resetControlBlock();
+        controlBlock.style.display = "block";
 
         var emptyListener = function(e) {
             e.preventDefault();
         };
+
+        document.addEventListener("touchmove", emptyListener, false);
 
         controlBlock.addEventListener("touchstart", function (e) {
             console.log(e);
             var touches = e.touches[0];
             controlX = touches.clientX - controlBlock.offsetLeft;
             controlY = touches.clientY - controlBlock.offsetTop;
-            document.addEventListener("touchmove", emptyListener, false);
+            // document.addEventListener("touchmove", emptyListener, false);
         }, false);
 
         controlBlock.addEventListener("touchmove", function (e) {
@@ -163,13 +165,13 @@
         }, false);
 
         controlBlock.addEventListener("touchend", function () {
-            document.removeEventListener("touchmove", emptyListener, false);
+            // document.removeEventListener("touchmove", emptyListener, false);
 
             var deltaData = resetControlBlock();
 
             var controlOrientation = Math.atan(deltaData[0] / (-deltaData[1])) / Math.PI * 180;
             var deviceOrientation = initialDeviceOrientationAlpha - deviceOrientationAlpha;
-            sendEvent(EVENT_SHOOT, controlOrientation, deviceOrientationBeta);
+            sendEvent(EVENT_SHOOT, (controlOrientation + deviceOrientation), deviceOrientationBeta, deltaData[2] * 0.01);
         }, false);
     }
 })(jQuery, window.pp);

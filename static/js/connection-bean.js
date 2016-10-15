@@ -19,12 +19,15 @@ MOVE_BACK = MOVE_BACK = 1;
 MOVE_LEFT = MOVE_LEFT = 2;
 MOVE_RIGHT = MOVE_RIGHT = 3;
 
-var ConnectionBean = function(event, additionalInfo1, additionalInfo2, additionalInfo3) {
-    this.event = EVENT_EMPTY;
+function ConnectionBean(event, additionalInfo1, additionalInfo2, additionalInfo3) {
+    obj = {};
+    obj.event = event;
     if (event == EVENT_SHOOT) {
-        this.alpha = additionalInfo1;
-        this.beta = additionalInfo2;
+        obj.alpha = additionalInfo1;
+        obj.beta = additionalInfo2;
+        obj.speed = additionalInfo3;
     } else if (event == EVENT_MOVE) {
-        this.direction = additionalInfo1;
+        obj.direction = additionalInfo1;
     }
+    return obj;
 };

@@ -27,7 +27,8 @@
     // generate id
     pp.utils.generateId = function() {
         var date = new Date();
-        return '' + date.getTime() + '-' + parseInt(Math.random() * 100000);
+        return '' + parseInt(Math.random() * 100000);
+        // return '' + date.getTime() + '-' + parseInt(Math.random() * 100000);
     };
 
     // test if the client support the web rtc

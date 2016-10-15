@@ -11,7 +11,7 @@ var log = require('../../core/debuglog');
 var config = require('../../config');
 
 // entry of `main` pages
-staticPage('/', 'main/mobile-client');
+staticPage('/', 'main/player-client');
 staticPage('/mobile-client', 'main/mobile-client');
 staticPage('/index', 'main/player-index');
 staticPage('/player-client', 'main/player-client');

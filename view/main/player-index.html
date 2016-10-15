@@ -4,20 +4,35 @@
     <title>HACKxFDU</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="/static/lib/peerjs/peer.js"></script>
+    <script src="/static/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/static/js/jquery.qrcode.min.js"></script>
+    <script src="/config.js"></script>
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/connection-bean.js"></script>
+    <script src="/static/js/pc-client-connector.js"></script>
     <link rel="stylesheet" type="text/css" href="static/css/player-index.css">
 </head>
 <body>
-<!--<h1>HACK x FDU</h1>-->
-<br>
-<br>
-<div style="display: inline;">
-<img src="static/img/logo.png" ondragstart="return false;" oncontextmenu="return false;">
-<img class="QR_Code" src="static/img/QR_Code.jpg">
+<div id="layerWrapper">
+    <div id="centerPopup" class="layer center">
+        <h1>Welcome to Ping-pong</h1>
+        <p>Game is now being loaded, please wait</p>
+        <div id="qrcodeArea" style="display: none"></div>
+        <h1 id="scanNotification" style="display: none">Scan the QR Code to start</h1>
+    </div>
 </div>
-<br>
-<br>
-<br>
-<a class="blue button" href="/player-client">Start Game</a>
+<!--<h1>HACK x FDU</h1>-->
+<!--<br>-->
+<!--<br>-->
+<!--<div style="display: inline;">-->
+<!--<img src="static/img/logo.png" ondragstart="return false;" oncontextmenu="return false;">-->
+<!--<div class="QR_Code"></div>-->
+<!--</div>-->
+<!--<br>-->
+<!--<br>-->
+<!--<br>-->
+<!--<a class="blue button" href="/player-client">Start Game</a>-->
 
 </body>
 </html>
