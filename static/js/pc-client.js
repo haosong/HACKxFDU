@@ -65,8 +65,6 @@ var loader = new THREE.JSONLoader();
  console.log('Reconnected to server FAILED.');
  });
  */
-init();
-animate();
 
 // Fire
 $(this).click(function () {
@@ -262,6 +260,7 @@ function animate() {
         var bullet = bullets[i].particle;
         if (bullet) {
             bullets[i].speed.y -= 0.15;
+            // console.log(bullets[i].speed);
             bullet.position.add(bullets[i].speed);
             var outbounds = xyzLimit * 1.1;
             if (( bullet.position.x >= outbounds || bullet.position.x <= -outbounds ) ||
