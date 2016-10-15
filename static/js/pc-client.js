@@ -83,7 +83,9 @@ function init() {
 
     // Camera
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.set(Math.random() * 600 - 300, 25, Math.random() * 600 - 300);// Random create initial position [-400, 400]
+    //camera.position.set(Math.random() * 600 - 300, 25, Math.random() * 600 - 300);// Random create initial position [-400, 400]
+    camera.position.set(-500, 25, 0);// Random create initial position [-400, 400]
+    camera.lookAt(new THREE.Vector3(1,130,0));
 
     // Scene
     scene = new THREE.Scene();
@@ -91,8 +93,10 @@ function init() {
 
     // Light
     light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(0, 0.5, 1).normalize();
+    light.position.set(0, 0.5, -1).normalize();
     scene.add(light);
+    var ambienLight = new THREE.AmbientLight(0x88aaaa);
+    scene.add(ambienLight);
 
     // Skybox
     var materials = [
@@ -126,6 +130,7 @@ function init() {
     }
     material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, opacity: 0.5, transparent: true});
     mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
     scene.add(mesh);
     //var helper = new THREE.GridHelper(500, 10, 0x444444, 0x444444);
     //helper.position.y = 0.1;
@@ -193,7 +198,8 @@ function init() {
         }
         playerFactory = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial(materials));
         playerFactory.scale.set(2.5, 2.5, 2.5);
-        playerFactory.position.set(0, 15, 0);
+        //playerFactory.position.set(0, 15, 0);
+        playerFactory.position.set(250, 15, 250);
         playerFactory.skeleton.useVertexTexture = false;
         //scene.add( skinnedMesh ); // Not add to scene
         mixer = new THREE.AnimationMixer(playerFactory);
@@ -208,7 +214,8 @@ function newBirds() {
             return;
         // Generate Birds
         // amount, type, Postion[X, Y, Z], Speed[X, Y, Z]
-        birds.push(new Birds(1, birdsGeometry[birds.length % 2], [Math.random() * 400 - 200, Math.random() * 400 - 200, Math.random() * 400 - 200], [Math.random(), Math.random(), Math.random()], scene, date.getTime()));
+        var type = Math.random() < 0.5 ? 0 : 1;
+        birds.push(new Birds(1, birdsGeometry[type], [Math.random() * 400 - 200, Math.random() * 150 + 50, Math.random() * 400 - 200], [-0.5 + Math.random(), -0.5 + Math.random(), -0.5 + Math.random()], scene, date.getTime()));
     }
 }
 
@@ -216,6 +223,14 @@ function collide() {
     for (var i = birds.length - 1; i > 0; i--) {
         for (var j = birds[i].meshs.length - 1; j >= 0; j--) {
             var position = birds[i].meshs[j].position;
+            if (( position.x > xyzLimit || position.x < -xyzLimit ) ||
+                ( position.y > xyzLimit ) ||
+                ( position.z > xyzLimit || position.z < -xyzLimit )) {
+                scene.remove(birds[i].meshs[j]);
+                birds[i].meshs.splice(j, 1);
+                birds[i].mixers.splice(j, 1);
+            }
+            continue;
             for (var k = bullets.length - 1; k >= 0; k--) {
                 var bullet = bullets[k].particle;
                 if (bullet) {
