@@ -14,7 +14,6 @@ var config = require('../../config');
 staticPage('/', 'main/mobile-client');
 staticPage('/mobile-client', 'main/mobile-client');
 staticPage('/player-client', 'main/player-client');
-staticPage('/pc-client', 'main/pc-client');
 
 app.get('/config.js', function(req, res) {
     res
