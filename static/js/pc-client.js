@@ -85,7 +85,7 @@ function init() {
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
     //camera.position.set(Math.random() * 600 - 300, 25, Math.random() * 600 - 300);// Random create initial position [-400, 400]
     camera.position.set(-500, 25, 0);// Random create initial position [-400, 400]
-    camera.lookAt(new THREE.Vector3(1,130,0));
+    camera.lookAt(new THREE.Vector3(1, 130, 0));
 
     // Scene
     scene = new THREE.Scene();
@@ -130,8 +130,7 @@ function init() {
     }
     material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, opacity: 0.5, transparent: true});
     mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    scene.add(mesh);
+    //scene.add(mesh);
     //var helper = new THREE.GridHelper(500, 10, 0x444444, 0x444444);
     //helper.position.y = 0.1;
     //scene.add(helper);
@@ -163,11 +162,11 @@ function init() {
         morphs.push(mesh);
     }
 
-    loader.load("static/model/animated/stork.js", function(geometry) {
+    loader.load("static/model/animated/stork.js", function (geometry) {
         birdsGeometry.push(geometry);
     });
 
-    loader.load("static/model/animated/parrot.js", function(geometry) {
+    loader.load("static/model/animated/parrot.js", function (geometry) {
         birdsGeometry.push(geometry);
     });
 
@@ -215,7 +214,7 @@ function newBirds() {
         // Generate Birds
         // amount, type, Postion[X, Y, Z], Speed[X, Y, Z]
         var type = Math.random() < 0.5 ? 0 : 1;
-        birds.push(new Birds(1, birdsGeometry[type], [Math.random() * 400 - 200, Math.random() * 150 + 50, Math.random() * 400 - 200], [-0.5 + Math.random(), -0.5 + Math.random(), -0.5 + Math.random()], scene, date.getTime()));
+        birds.push(new Birds(1, birdsGeometry[type], [Math.random() * 400 - 100, Math.random() * 150 + 50, Math.random() * 400 - 200], [-0.5 + Math.random(), -0.5 + Math.random(), (2 * type - 1) * (0.2 + Math.random() * 0.4)], scene, date.getTime()));
     }
 }
 
@@ -264,9 +263,10 @@ function animate() {
         if (bullet) {
             bullets[i].speed.y -= 0.15;
             bullet.position.add(bullets[i].speed);
-            if (( bullet.position.x >= xyzLimit || bullet.position.x <= -xyzLimit ) ||
+            var outbounds = xyzLimit * 1.1;
+            if (( bullet.position.x >= outbounds || bullet.position.x <= -outbounds ) ||
                 ( bullet.position.y >= 500 || bullet.position.y <= 0 ) ||
-                ( bullet.position.z >= xyzLimit || bullet.position.z <= -xyzLimit )) {
+                ( bullet.position.z >= outbounds || bullet.position.z <= -outbounds )) {
                 // Bullet reached limit?
                 console.log("remove outbounded bullet");
                 scene.remove(bullets[i].particle);
