@@ -62,10 +62,11 @@
 
         showQRCode(id);
 
+        init();
+        animate();
+
         peer.on('connection', function(conn) {
             hideLayers();
-            init();
-            animate();
 
             var cameraSpeed = camera.getWorldDirection().multiplyScalar(20);
             var initialAlpha = Math.atan(cameraSpeed.z / cameraSpeed.x) / Math.PI * 180;

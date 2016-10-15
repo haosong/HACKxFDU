@@ -34,12 +34,28 @@
         $state.html(text);
     }
 
+    function isWeixin(){
+        var ua = navigator.userAgent.toLowerCase();
+        setState(ua);
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function load() {
         try {
+            if (isWeixin()) {
+                document.write("<h1 style='width: 100%; text-align: center;'>You're currently under WeChat environment, </h1>><h2 style='width: 100%; text-align: center;'>please click \"Open in Browser\"</h2>");
+                return;
+            }
+
             peerId = pp.uri.getQueries().peer_id;
 
             if (!peerId) {
                 peerId = prompt('Pair ID not found, please input pair ID on the screen', '');
+                location.href = "/mobile-client?peer_id=" + peerId;
             }
 
             id = pp.utils.generateId();
