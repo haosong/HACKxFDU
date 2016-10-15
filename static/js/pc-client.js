@@ -1,7 +1,10 @@
 //var socket = io('http://localhost:8000');
 var camera, controls, scene, renderer, stats;
 var light, mesh;
-var mixer, morphs = [];
+var morphs = [];
+var mixers = [];
+var birdsGeometry = [];
+var birds = [];
 var playerFactory, particle, color, id;
 var players = [];
 var bullets = [];
@@ -129,7 +132,7 @@ function init() {
     //scene.add(helper);
 
     // Birds
-    mixer = new THREE.AnimationMixer(scene);
+    //mixer = new THREE.AnimationMixer(scene);
     function addMorph(geometry, speed, duration, x, y, z, fudgeColor) {
         var material = new THREE.MeshLambertMaterial({
             color: 0xffaa55,
@@ -141,9 +144,12 @@ function init() {
         }
         var mesh = new THREE.Mesh(geometry, material);
         mesh.speed = speed;
-        var clip = geometry.animations[0];
-        mixer.clipAction(clip, mesh).setDuration(duration).// to shift the playback out of phase:
-        startAt(-duration * Math.random()).play();
+        //var clip = geometry.animations[0];
+		var mixer = new THREE.AnimationMixer(mesh);
+        mixer.clipAction(geometry.animations[0]).setDuration(1).play();
+		
+		mixers.push(mixer);
+		
         mesh.position.set(x, y, z);
         mesh.rotation.y = Math.PI / 2;
         mesh.castShadow = true;
@@ -151,12 +157,21 @@ function init() {
         scene.add(mesh);
         morphs.push(mesh);
     }
-    loader.load("static/model/animated/stork.js", function (geometry) {
+	
+	loader.load("static/model/animated/stork.js", function(geometry) {
+		birdsGeometry.push(geometry);
+	});
+	
+	loader.load("static/model/animated/parrot.js", function(geometry) {
+		birdsGeometry.push(geometry);
+	});
+	
+    /*loader.load("static/model/animated/stork.js", function (geometry) {
         addMorph(geometry, 350, 1, 500 - Math.random() * 500, 0 + 350, 340, true);
     });
     loader.load("static/model/animated/parrot.js", function (geometry) {
         addMorph(geometry, 450, 0.5, 500 - Math.random() * 500, 0 + 300, 700, true);
-    });
+    });*/
 
     // Renderer
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -186,6 +201,41 @@ function init() {
     });
 }
 
+function newBirds() {
+	if (birds.length < 5) {
+		var date = new Date();
+		if (!birdsGeometry[birds.length % 2])
+			return;
+		birds.push(new Birds(1, birdsGeometry[birds.length % 2], [Math.random() * 400 - 200, Math.random() * 400 - 200, Math.random() * 400 - 200], [Math.random(), Math.random(), Math.random()], scene, date.getTime()));
+	}
+}
+
+function collide() {
+	for (var i = birds.length - 1; i > 0; i--) {
+		for (var j = birds[i].meshs.length - 1; j >= 0; j--) {
+			var position = birds[i].meshs[j].position;
+			for (var k = bullets.length - 1; k >= 0; k--) {
+				var bullet = bullets[k].particle;
+				if (bullet) {
+					var pos = bullet.position;
+					if (Math.pow(position.x - pos.x, 2) + Math.pow(position.y - pos.y, 2) + Math.pow(position.z - pos.z, 2) < 100) {
+						scene.remove(birds[i].meshs[j]);
+						birds[i].meshs.splice(j, 1);
+						birds[i].mixers.splice(j, 1);
+						scene.remove(bullets[k].particle);
+						bullets.splice(k, 1);
+						break;
+					}
+				}
+			}
+		}
+		if (birds[i].meshs.length < 1) {
+			birds.splice(i, 1);
+			//console.log('collode: ' + i);
+		}
+	}
+}
+
 function animate() {
     //stats.begin();
     requestAnimationFrame(animate);
@@ -194,15 +244,16 @@ function animate() {
     for (var i = 0; i < bullets.length; i++) {
         var bullet = bullets[i].particle;
         if (bullet) {
+			bullets[i].speed.y -= 0.15;
             bullet.position.add(bullets[i].speed);
             if (( bullet.position.x >= xyzLimit || bullet.position.x <= -xyzLimit ) ||
-                ( bullet.position.y >= 250 || bullet.position.y <= 0 ) ||
+                ( bullet.position.y >= 500 || bullet.position.y <= 0 ) ||
                 ( bullet.position.z >= xyzLimit || bullet.position.z <= -xyzLimit )) {
                 // Bullet reached limit?
                 console.log("remove outbounded bullet");
                 scene.remove(bullets[i].particle);
                 bullets.splice(i, 1);
-            }
+				}
             bullet.verticesNeedUpdate = true;
         }
     }
@@ -220,15 +271,31 @@ function onWindowResize() {
 
 function render() {
     var delta = clock.getDelta();
-    for (var i = 0; i < morphs.length; i++) {
+	var date = new Date();
+	//if (birds.length > 0)
+	//	console.log(date.getTime() + " " + birds[0].createTime);
+	for (var i = birds.length - 1; i >= 0; i--) {
+		if (date.getTime() - birds[i].createTime > 5000) {
+			for (var j = 0; j < birds[i].meshs.length; j++)
+				scene.remove(birds[i].meshs[j]);
+			//console.log(date.getTime() + 'birds: ' + birds.length + ' runtime: ' + i);
+			birds.splice(i, 1);
+		}
+	}
+	collide();
+	newBirds();
+	for (var i = 0; i < birds.length; i++)
+		birds[i].update(delta);
+    /*for (var i = 0; i < morphs.length; i++) {
         morph = morphs[i];
         morph.position.x += morph.speed * delta;
         if (morph.position.x > 2000) {
             morph.position.x = -1000 - Math.random() * 500;
         }
-    }
+    }*/
     controls.update(delta);
-    if (mixer) mixer.update(delta);
+	/*for (i = 0; i < mixers.length; i++)
+		mixers[i].update(delta);*/
     renderer.render(scene, camera);
 }
 
