@@ -206,6 +206,8 @@ function newBirds() {
         var date = new Date();
         if (!birdsGeometry[birds.length % 2])
             return;
+        // Generate Birds
+        // amount, type, Postion[X, Y, Z], Speed[X, Y, Z]
         birds.push(new Birds(1, birdsGeometry[birds.length % 2], [Math.random() * 400 - 200, Math.random() * 400 - 200, Math.random() * 400 - 200], [Math.random(), Math.random(), Math.random()], scene, date.getTime()));
     }
 }
@@ -218,6 +220,7 @@ function collide() {
                 var bullet = bullets[k].particle;
                 if (bullet) {
                     var pos = bullet.position;
+                    // Square < 100
                     if (Math.pow(position.x - pos.x, 2) + Math.pow(position.y - pos.y, 2) + Math.pow(position.z - pos.z, 2) < 100) {
                         scene.remove(birds[i].meshs[j]);
                         birds[i].meshs.splice(j, 1);
@@ -275,6 +278,7 @@ function render() {
     //if (birds.length > 0)
     //	console.log(date.getTime() + " " + birds[0].createTime);
     for (var i = birds.length - 1; i >= 0; i--) {
+        // Bird exited time = 5s
         if (date.getTime() - birds[i].createTime > 5000) {
             for (var j = 0; j < birds[i].meshs.length; j++)
                 scene.remove(birds[i].meshs[j]);

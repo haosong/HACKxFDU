@@ -39,9 +39,9 @@ Birds.prototype = {
 	update : function(delta) {
 		//console.log('del');
 		for (var i = 0; i < this.meshs.length; i++) {
-			/*this.meshs[i].position.x += this.speed[0] * 35;
+			this.meshs[i].position.x += this.speed[0] * 35;
 			this.meshs[i].position.y += this.speed[1] * 35;
-			this.meshs[i].position.z += this.speed[2] * 35;*/
+			this.meshs[i].position.z += this.speed[2] * 35;
 			//console.log(this.meshs[i].position);
 		}
 		for (var i = 0; i < this.mixers.length; i++) {
