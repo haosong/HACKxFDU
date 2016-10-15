@@ -38,6 +38,10 @@
         try {
             peerId = pp.uri.getQueries().peer_id;
 
+            if (!peerId) {
+                peerId = prompt('Pair ID not found, please input pair ID on the screen', '');
+            }
+
             id = pp.utils.generateId();
             peer = pp.peer.createPeer(id);
             conn = peer.connect(peerId);

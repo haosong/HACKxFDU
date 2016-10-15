@@ -33,6 +33,9 @@
             foreground: '#000000',
             text: uri,
         });
+        $scanNotification.html($scanNotification.html() + peerId);
+
+
         $loadingContent.hide(1000);
         $qrcodeArea.fadeIn(1000);
         $scanNotification.fadeIn(1000);
