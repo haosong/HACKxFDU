@@ -194,6 +194,7 @@ function animate() {
     for (var i = 0; i < bullets.length; i++) {
         var bullet = bullets[i].particle;
         if (bullet) {
+            //bullets[i].speed.y -= 0.15;
             bullet.position.add(bullets[i].speed);
             if (( bullet.position.x >= xyzLimit || bullet.position.x <= -xyzLimit ) ||
                 ( bullet.position.y >= 250 || bullet.position.y <= 0 ) ||
@@ -239,6 +240,12 @@ function restrictField(controls, restrict) {
     if (controls.object.position.x < -restrict) {
         controls.object.position.x = -restrict;
     }
+    // if (controls.object.position.y > restrict) {
+    //     controls.object.position.y = restrict;
+    // }
+    // if (controls.object.position.y < 25) {
+    //     controls.object.position.y = 25;
+    // }
     controls.object.position.y = 25; // Height of view = 25
     if (controls.object.position.z > restrict) {
         controls.object.position.z = restrict;
