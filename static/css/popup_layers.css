@@ -1,3 +1,7 @@
+* {
+    font-family: "Microsoft JhengHei";
+}
+
 #shader {
     position: fixed;
     left: 0;
