@@ -212,7 +212,7 @@ function newBirds() {
         // Generate Birds
         // amount, type, Postion[X, Y, Z], Speed[X, Y, Z]
         var type = Math.random() < 0.5 ? 0 : 1;
-        birds.push(new Birds(1, birdsGeometry[type], [Math.random() * 400 - 100, Math.random() * 150 + 50, Math.random() * 400 - 200], [-0.5 + Math.random(), -0.5 + Math.random(), (2 * type - 1) * (0.2 + Math.random() * 0.4)], scene, date.getTime()));
+        birds.push(new Birds(1, birdsGeometry[type], [Math.random() * 150 - 100, Math.random() * 150 + 50, (1 - 2 * type) * 500], [-0.5 + Math.random(), -0.5 + Math.random(), (2 * type - 1) * (0.1 + Math.random() * 0.3)], scene, date.getTime()));
     }
 }
 
@@ -259,7 +259,7 @@ function animate() {
     for (var i = 0; i < bullets.length; i++) {
         var bullet = bullets[i].particle;
         if (bullet) {
-            bullets[i].speed.y -= 0.15;
+            bullets[i].speed.y -= 0.05;
             // console.log(bullets[i].speed);
             bullet.position.add(bullets[i].speed);
             var outbounds = xyzLimit * 1.1;
@@ -293,7 +293,7 @@ function render() {
     //	console.log(date.getTime() + " " + birds[0].createTime);
     for (var i = birds.length - 1; i >= 0; i--) {
         // Bird exited time = 5s
-        if (date.getTime() - birds[i].createTime > 5000) {
+        if (date.getTime() - birds[i].createTime > 100000) {
             for (var j = 0; j < birds[i].meshs.length; j++)
                 scene.remove(birds[i].meshs[j]);
             //console.log(date.getTime() + 'birds: ' + birds.length + ' runtime: ' + i);
