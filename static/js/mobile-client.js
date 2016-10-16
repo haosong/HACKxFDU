@@ -21,6 +21,9 @@
     var ControlBlockDefaultRecoverSpeed = 20;
     var ControlBlockHorizontalMovementThreshold = 1;
 
+    var strainAnchorTop = 40;
+    var strainAnchorSide = 40;
+
     $(function () {
         $state = $('#state');
         if (pp.utils.hasWebRTC()) {
@@ -91,7 +94,7 @@
 
         $('#reset').click(function () {
             rotateInited = false;
-        });
+       });
 
         /* Orientation */
         $(window).on('deviceorientation', function (e) {
@@ -136,6 +139,8 @@
                 controlBlock.style.left = controlBlock.offsetLeft + increaseLeft + 'px';
                 controlBlock.style.top = controlBlock.offsetTop + increaseTop + 'px';
 
+                followLine(controlBlock.offsetLeft, controlBlock.scrollWidth >> 1 + controlBlock.offsetTop, controlBlock.scrollWidth);
+
                 if (((defaultControlBlockLeft > currentControlBlockLeft) ^ (controlBlock.offsetLeft <= defaultControlBlockLeft))
                     || (defaultControlBlockTop > currentControlBlockTop) ^ (controlBlock.offsetTop <= defaultControlBlockTop)) {
                     controlBlock.style.left = defaultControlBlockLeft + "px";
@@ -153,6 +158,50 @@
 
         resetControlBlock();
         controlBlock.style.display = "block";
+
+        var canvas = document.createElement("div");
+        canvas.id = 'mainCanvas';
+        canvas.height = window.innerHeight;// + "px";
+        canvas.width = window.innerWidth;// + "px";
+        document.body.appendChild(canvas);
+
+        // document.getElementById("bow").style.width = document.body.clientWidth;
+
+        function drawLine(x0,y0,x1,y1,color)
+        {
+            var rs = "";
+            if (y0 == y1)  //画横线
+            {
+                if (x0>x1){var t=x0;x0=x1;x1=t}
+                rs = "<span style='top:"+y0+";left:"+x0+";position:absolute;font-size:1px;background-color:"+color+";height:1; width:"+Math.abs(x1-x0)+"'></span>";
+            }
+            else if (x0 == x1)  //画竖线
+            {
+                if (y0>y1){var t=y0;y0=y1;y1=t}
+                rs = "<span style='top:"+y0+";left:"+x0+";position:absolute;font-size:1px;background-color:"+color+";width:1;height:"+Math.abs(y1-y0)+"'></span>";
+            }
+            else
+            {
+                var lx = x1-x0;
+                var ly = y1-y0;
+                var l = Math.sqrt(lx*lx+ly*ly);
+                rs = new Array();
+                for (var i=0;i<l;i+=1)
+                {
+                    var p = i/l;
+                    var px = parseInt(x0 + lx*p);
+                    var py = parseInt(y0 + ly*p);
+                    rs[rs.length] = "<span style='top:"+py+";left:"+px+";height:1;width:1;position:absolute;font-size:1px;background-color:"+color+"'></span>";
+                }
+                rs = rs.join("");
+            }
+            return rs
+        }
+
+        function followLine(controlBlockCenterX, controlBlockCenterY, controlBlockSize) {
+            drawLine(controlBlockCenterX + (controlBlockSize >> 1), controlBlockCenterY, window.innerWidth - strainAnchorSide, strainAnchorTop, 0xFFF);
+            drawLine(controlBlockCenterX - (controlBlockSize >> 1), controlBlockCenterY, strainAnchorSide, strainAnchorTop, 0xFFF);
+        }
 
         var emptyListener = function(e) {
             e.preventDefault();
@@ -182,6 +231,8 @@
             }
             controlBlock.style.left = oLeft + "px";
             controlBlock.style.top = oTop + "px";
+
+            followLine(controlBlock.offsetLeft, controlBlock.scrollWidth >> 1 + controlBlock.offsetTop, controlBlock.scrollWidth);
         }, false);
 
         controlBlock.addEventListener("touchend", function () {
