@@ -68,6 +68,14 @@
         peer.on('connection', function(conn) {
             hideLayers();
 
+            $('#retroclockbox2').flipcountdown({
+                size: 'lg',
+                tick: function () {
+                    if (time <= 0) return 0;
+                    return time--;
+                }
+            });
+
             var cameraSpeed = camera.getWorldDirection().multiplyScalar(20);
             var initialAlpha = Math.atan(cameraSpeed.z / cameraSpeed.x) / Math.PI * 180;
 

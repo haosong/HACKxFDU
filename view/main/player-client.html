@@ -43,7 +43,9 @@
     <script src="/config.js"></script>
     <script src="/static/js/utils.js"></script>
     <script src="/static/js/connection-bean.js"></script>
+    <script type="text/javascript" src="static/js/jquery.flipcountdown.js"></script>
     <link rel="stylesheet" type="text/css" href="static/css/popup_layers.css">
+    <link rel="stylesheet" type="text/css" href="static/jquery.flipcountdown.css" />
 </head>
 <body>
 <div id="shader"></div>
@@ -63,8 +65,17 @@
 <div id="container">
     <!--<img class="gun" id="gun1" src="static/img/1.png">-->
     <!--<img class="gun" id="gun2" src="static/img/2.png">-->
-    <h1 style="z-index: 100; position: absolute; width: 100%" id="score"></h1>
+    <!--<h1 style="z-index: 100; position: absolute; width: 100%" id="score"></h1>-->
 </div>
+<div style="display:inline">
+    <h1 style="display: inline; line-height:75px; vertical-align: top; text-align: center; margin-right: 20px">Your Score:</h1>
+    <div id="retroclockbox1" style="display: inline; margin-right: 80px"></div>
+    <h1 style="display: inline; line-height:75px; vertical-align: top; text-align: center; margin-right: 20px">Time Remain:</h1>
+    <div id="retroclockbox2" style="display: inline;"></div>
+</div>
+<script>
+
+</script>
 <!--<div id="copyright">-->
     <!--<a href="https://github.com/song-hao/HACKxFDU">Github Repo</a>-->
     <!--<p>© songhao1119@gmail.com</p>-->

@@ -66,6 +66,23 @@ var score = 0;
  console.log('Reconnected to server FAILED.');
  });
  */
+var time = 60;
+
+$(function () {
+    var i = 10;
+    $('#retroclockbox1').flipcountdown({
+        size: 'lg',
+        tick: function () {
+            return score;
+        }
+    });
+    $('#retroclockbox2').flipcountdown({
+        size: 'lg',
+        tick: function () {
+            return time;
+        }
+    });
+});
 
 // Fire
 $(this).click(function () {
@@ -75,6 +92,7 @@ $(this).click(function () {
 });
 
 function init() {
+
     // Stats Monitor
     //stats = new Stats();
     //stats.showPanel(0);
