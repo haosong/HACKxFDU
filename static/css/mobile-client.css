@@ -11,4 +11,12 @@ body {
     left: 30%;
     top: 20px;
     background-color: aqua;
+    z-index: 10;
+}
+
+#mainCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }

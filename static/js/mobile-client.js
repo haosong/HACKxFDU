@@ -21,6 +21,9 @@
     var ControlBlockDefaultRecoverSpeed = 20;
     var ControlBlockHorizontalMovementThreshold = 1;
 
+    var strainAnchorTop = 40;
+    var strainAnchorSide = 40;
+
     $(function () {
         $state = $('#state');
         if (pp.utils.hasWebRTC()) {
@@ -136,6 +139,8 @@
                 controlBlock.style.left = controlBlock.offsetLeft + increaseLeft + 'px';
                 controlBlock.style.top = controlBlock.offsetTop + increaseTop + 'px';
 
+                followLine(controlBlock.offsetLeft, controlBlock.scrollWidth >> 1 + controlBlock.offsetTop, controlBlock.scrollWidth);
+
                 if (((defaultControlBlockLeft > currentControlBlockLeft) ^ (controlBlock.offsetLeft <= defaultControlBlockLeft))
                     || (defaultControlBlockTop > currentControlBlockTop) ^ (controlBlock.offsetTop <= defaultControlBlockTop)) {
                     controlBlock.style.left = defaultControlBlockLeft + "px";
@@ -153,6 +158,78 @@
 
         resetControlBlock();
         controlBlock.style.display = "block";
+
+        var canvas = document.createElement("canvas");
+        canvas.id = 'mainCanvas';
+        canvas.height = window.innerHeight;// + "px";
+        canvas.width = window.innerWidth;// + "px";
+        document.body.appendChild(canvas);
+
+        function followLine(controlBlockCenterX, controlBlockCenterY, controlBlockSize) {
+            var c = document.getElementById("mainCanvas");
+            var cxt = c.getContext("2d");
+            cxt.clearRect(0, 0, c.width, c.height);
+            cxt.moveTo(controlBlockCenterX + (controlBlockSize >> 1), controlBlockCenterY);
+            console.log(controlBlockCenterX + (controlBlockSize >> 1) + " " + controlBlockCenterY);
+            cxt.lineTo(window.innerWidth - strainAnchorSide, strainAnchorTop);
+            console.log(window.innerWidth - strainAnchorSide + " " + strainAnchorTop);
+            cxt.moveTo(controlBlockCenterX - (controlBlockSize >> 1), controlBlockCenterY);
+            console.log(controlBlockCenterX - (controlBlockSize >> 1) + " " + controlBlockCenterY);
+            cxt.lineTo(strainAnchorSide, strainAnchorTop);
+            console.log(strainAnchorSide + " " + strainAnchorTop);
+            cxt.stroke();
+        }
+
+        var html = "";
+        var x,y;
+
+        function a(x,y,color)
+        {
+            html +="<img border='0' style='position:absolute;left:"+(x+20)+";top:"+(y+20)+";background-color:"+color+"'src='px.gif' width=1 height=1>";
+        }
+        function line(x1,y1,x2,y2,color)
+        {
+            var   tmp
+            if(x1>=x2)
+            {
+                tmp=x1;
+                x1=x2;
+                x2=tmp;
+                tmp=y1;
+                y1=y2;
+                y2=tmp;
+            }
+            for(var i=x1;i<=x2;i++)
+            {
+                x =i;
+                y =(y2-y1)/(x2-x1)*(x-x1)+y1;
+                a(x,y,color);
+            }
+        }
+
+        function fullScreenCanvas() {
+            var element = document.getElementById('mainCanvas'), method = "RequestFullScreen";
+            var prefixMethod;
+            ["webkit", "moz", "ms", "o", ""].forEach(function (prefix) {
+                    if (prefixMethod)
+                        return;
+                    if (prefix === "") {
+                        method = method.slice(0, 1).toLowerCase() + method.slice(1);
+                    }
+                    var fsMethod = typeof element[prefix + method];
+                    if (fsMethod + "" !== "undefined") {
+                        if (fsMethod === "function") {
+                            prefixMethod = element[prefix + method]();
+                        } else {
+                            prefixMethod = element[prefix + method];
+                        }
+                    }
+                }
+            );
+            return prefixMethod;
+        }
+
+        fullScreenCanvas();
 
         var emptyListener = function(e) {
             e.preventDefault();
@@ -182,6 +259,8 @@
             }
             controlBlock.style.left = oLeft + "px";
             controlBlock.style.top = oTop + "px";
+
+            followLine(controlBlock.offsetLeft, controlBlock.scrollWidth >> 1 + controlBlock.offsetTop, controlBlock.scrollWidth);
         }, false);
 
         controlBlock.addEventListener("touchend", function () {
