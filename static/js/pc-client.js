@@ -13,6 +13,7 @@ var clock = new THREE.Clock();
 var textureLoader = new THREE.TextureLoader();
 var bulletMap = textureLoader.load("static/model/textures/sprite.png");
 var loader = new THREE.JSONLoader();
+var score = 0;
 /*
  // Socket.io
  socket.on('init', function (socketID) {
@@ -226,19 +227,21 @@ function collide() {
                 scene.remove(birds[i].meshs[j]);
                 birds[i].meshs.splice(j, 1);
                 birds[i].mixers.splice(j, 1);
+                continue;
             }
-            continue;
             for (var k = bullets.length - 1; k >= 0; k--) {
                 var bullet = bullets[k].particle;
                 if (bullet) {
                     var pos = bullet.position;
                     // Square < 100
-                    if (Math.pow(position.x - pos.x, 2) + Math.pow(position.y - pos.y, 2) + Math.pow(position.z - pos.z, 2) < 100) {
+                    if (Math.pow(0, 2) + Math.pow(position.y - pos.y, 2) + Math.pow(position.z - pos.z, 2) < 3000) {
                         scene.remove(birds[i].meshs[j]);
                         birds[i].meshs.splice(j, 1);
                         birds[i].mixers.splice(j, 1);
                         scene.remove(bullets[k].particle);
                         bullets.splice(k, 1);
+                        score += 10;
+                        $("#score").html("Your score: " + score);
                         break;
                     }
                 }
