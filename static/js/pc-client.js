@@ -13,6 +13,7 @@ var clock = new THREE.Clock();
 var textureLoader = new THREE.TextureLoader();
 var bulletMap = textureLoader.load("static/model/textures/sprite.png");
 var loader = new THREE.JSONLoader();
+var arrow;
 /*
  // Socket.io
  socket.on('init', function (socketID) {
@@ -158,7 +159,32 @@ function init() {
         morphs.push(mesh);
     }
 
-    loader.load("static/model/animated/stork.js", function(geometry) {
+	loader.load("static/model/animated/cube.json", function(geometry) {
+        arrow = geometry;
+    });
+	for (var i = 0; i < 1; i++) {
+		loader.load("static/model/animated/cube.json", function(geometry) {
+    	/*geometry.traverse(function(child) {
+    		if (child instanceof THREE.Mesh) {
+    			child.material.side = THREE.DoubleSide;
+    		}
+    	});*/
+    	//console.log(geometry);
+    	var material = new THREE.MeshPhongMaterial({color : 0xa40800});
+        var mesh = new THREE.Mesh(geometry, material);
+        //mesh.scale.set(10, 10, 10);
+        /*mesh.traverse(function(child) {
+        	if (child instanceof THREE.Mesh) {
+        		child.material.side = THREE.DoubleSide;
+        	}
+        });*/
+        //console.log('add cube to scene');
+        scene.add(mesh);
+    });
+	}
+	
+    
+	loader.load("static/model/animated/stork.js", function(geometry) {
         birdsGeometry.push(geometry);
     });
 
@@ -244,17 +270,19 @@ function animate() {
     requestAnimationFrame(animate);
     //socket.emit('player', [controls.object.position]);
     // update position of all the bullets
+	console.log(bullets.length);
     for (var i = 0; i < bullets.length; i++) {
-        var bullet = bullets[i].particle;
+        var bullet = bullets[i];
         if (bullet) {
             bullets[i].speed.y -= 0.15;
             bullet.position.add(bullets[i].speed);
+			console.log(bullets.position);
             if (( bullet.position.x >= xyzLimit || bullet.position.x <= -xyzLimit ) ||
                 ( bullet.position.y >= 500 || bullet.position.y <= 0 ) ||
                 ( bullet.position.z >= xyzLimit || bullet.position.z <= -xyzLimit )) {
                 // Bullet reached limit?
                 console.log("remove outbounded bullet");
-                scene.remove(bullets[i].particle);
+                scene.remove(bullets[i]);
                 bullets.splice(i, 1);
             }
             bullet.verticesNeedUpdate = true;
@@ -346,13 +374,44 @@ function updatePlayer(id, x, y, z) {
 }
 
 function AddBullet(position, speed) {
-    particle = new THREE.Sprite(new THREE.SpriteMaterial({map: bulletMap, color: 0xffffff, fog: true}));
+	
+	
+	/*var material = new THREE.MeshLambertMaterial({
+            color: 0xffaa55,
+            morphTargets: true,
+            vertexColors: THREE.FaceColors
+        });
+        //if (fudgeColor) {
+            material.color.offsetHSL(0, Math.random() * 0.5 - 0.25, Math.random() * 0.5 - 0.25);
+        //}
+        var mesh = new THREE.Mesh(arrow, material);
+        mesh.speed = speed;
+		mesh.scale = 10;
+        mesh.position.set(position.x, position.y, position.z);
+        mesh.rotation.y = Math.PI / 2;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        scene.add(mesh);*/
+	
+	var material = new THREE.MeshPhongMaterial({color : 0xa40800});
+    var mesh = new THREE.Mesh(arrow, material);
+	mesh.speed = speed;
+	mesh.position.set(position.x, position.y, position.z);
+    mesh.rotation.y = Math.atan(speed.x/speed.z);
+	mesh.rotation.x = Math.atan(speed.y/speed.z);
+	mesh.rotation.z = Math.atan(speed.x/speed.y);
+    //mesh.castShadow = true;
+    //mesh.receiveShadow = true;
+	scene.add(mesh);
+	bullets.push(mesh);
+	
+    /*particle = new THREE.Sprite(new THREE.SpriteMaterial({map: bulletMap, color: 0xffffff, fog: true}));
     particle.position.x = position.x;
     particle.position.y = position.y;
     particle.position.z = position.z;
     particle.scale.x = particle.scale.y = 1.5;
     bullets.push(new Bullet(particle, speed));
-    scene.add(particle);
+    scene.add(particle);*/
 }
 
 function Bullet(particle, speed) {
