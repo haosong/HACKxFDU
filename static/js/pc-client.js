@@ -66,7 +66,7 @@ var score = 0;
  console.log('Reconnected to server FAILED.');
  });
  */
-var time = 60;
+var time = 100;
 
 $(function () {
     var i = 10;

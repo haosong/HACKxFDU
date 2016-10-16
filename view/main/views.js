@@ -13,6 +13,7 @@ var config = require('../../config');
 // entry of `main` pages
 staticPage('/', 'main/player-client');
 staticPage('/mobile-client', 'main/mobile-client');
+staticPage('/mobile-score', 'main/mobile-score');
 staticPage('/player-client', 'main/player-client');
 
 app.get('/config.js', function(req, res) {

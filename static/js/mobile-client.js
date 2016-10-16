@@ -70,6 +70,11 @@
         conn.on('open', function () {
             setState('Player Connected: ' + peerId);
             process();
+            conn.on('data', function(data) {
+                // TODO: data
+                console.log(data);
+                location.href = '/mobile-score?name=' + data.name + '&score=' + data.score;
+            });
         });
     }
 

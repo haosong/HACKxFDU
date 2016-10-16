@@ -71,7 +71,14 @@
             $('#retroclockbox2').flipcountdown({
                 size: 'lg',
                 tick: function () {
-                    if (time <= 0) return 0;
+                    if (time <= 0){
+                        var name = prompt('Input your name to get your score page to share to SNS', 'One of your friend');
+                        conn.send({
+                            'name' : name,
+                            'score' : score,
+                        });
+                        location.href = '/';
+                    }
                     return time--;
                 }
             });
